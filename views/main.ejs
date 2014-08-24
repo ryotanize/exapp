@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>main</title>
+    <link rel='stylesheet' href='/stylesheets/main.css' />
+    <script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <meta name="viewport" content="width=1920, height=1080">
+    
+    <script>
+      var socket = io();
+      var property,users;
+      $(document).ready(function(){
+        $.getJSON("./data/property.json",function(data){
+          property = data;
+        });
+
+        
+        //socket関連
+        socket.on('messageToMain',function(msg){
+          $("#logMessage").html(msg);
+        });        
+        
+        socket.on('messageToMain_position',function(pos){
+          $("#logMessage").html("Now Position : " + property[pos].name);
+          socket.emit("messageToMobile",property[pos].name);
+          moveIcon(pos);
+        });
+            
+      });
+      
+      function moveIcon(pos){
+        $icon = $("#icon");
+        $icon.css({"top":"auto","bottom":"auto","left":"auto","right":"auto"});
+        if(pos < 10){
+          $icon.css({"left" : 10, "bottom" : 130 + (pos * 80)});
+        }else if(10 <= pos && pos < 20){
+          $icon.css({"top" : 20, "left" : 160 + ((pos-10) * 140)});
+        }else if(20 <= pos && pos < 30){
+          $icon.css({"right" : 140, "top" : 80 + ((pos-20) * 80)});
+        }else if(30 <= pos){
+          $icon.css({"bottom" : 20, "right" : 160 + ((pos-30) * 140)});
+        }
+      };
+      
+    </script>
+    
+  </head>
+  <body style="width:1920px;height:1080px;">
+    <!--
+    <p>main page</p>
+    <ul id="messages"></ul>
+    -->
+    <div class="card" id="card_go"></div>
+    <div class="card" id="card_jail"></div>
+    <div class="card" id="card_goToJail"></div>
+    <div class="card" id="card_parking"></div>
+    <div class="card_left" id="card_chance0"></div>
+    <div class="card_right" id="card_chance1"></div>
+    <div class="card_bottom" id="card_chance2"></div>
+    <div class="card_left" id="card_chest0"></div>
+    <div class="card_top" id="card_chest1"></div>
+    <div class="card_bottom" id="card_chest2"></div>
+    <div class="card_left" id="card_train0"></div>
+    <div class="card_top" id="card_train1"></div>
+    <div class="card_right" id="card_train2"></div>
+    <div class="card_bottom" id="card_train3"></div>
+    <div class="card_top" id="card_infra0"></div>
+    <div class="card_right" id="card_infra1"></div>
+    <div class="card_left" id="card_incomeTax"></div>
+    <div class="card_bottom" id="card_luxuryTax"></div>
+    <div class="card_left" id="card_0"></div>
+    <div class="card_left" id="card_1"></div>
+    <div class="card_left" id="card_2"></div>
+    <div class="card_left" id="card_3"></div>
+    <div class="card_left" id="card_4"></div>
+    <div class="card_top" id="card_5"></div>
+    <div class="card_top" id="card_6"></div>
+    <div class="card_top" id="card_7"></div>
+    <div class="card_top" id="card_8"></div>
+    <div class="card_top" id="card_9"></div>
+    <div class="card_top" id="card_10"></div>
+    <div class="card_right" id="card_11"></div>
+    <div class="card_right" id="card_12"></div>
+    <div class="card_right" id="card_13"></div>
+    <div class="card_right" id="card_14"></div>
+    <div class="card_right" id="card_15"></div>
+    <div class="card_right" id="card_16"></div>
+    <div class="card_bottom" id="card_17"></div>
+    <div class="card_bottom" id="card_18"></div>
+    <div class="card_bottom" id="card_19"></div>
+    <div class="card_bottom" id="card_20"></div>
+    <div class="card_bottom" id="card_21"></div>
+    
+    <div class="card" id="center">
+      <h2>Monopoly</h2>
+      <p>Log Message</p>
+      <div id="logMessage">
+      </div>
+    </div>
+    
+    <img id="icon" src="./images/yoshida.png" width="200" height="100" style="top : 950px; left : 10px; position : absolute;">
+    
+    
+  </body>
+</html>

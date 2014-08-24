@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <title>mobile</title>
+    <link rel='stylesheet' href='/stylesheets/mobile.css' />
+    <script src="https://cdn.socket.io/socket.io-1.0.6.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>    
+    
+    <script>
+      var socket = io();
+      var user;
+      //socket.emit('chat message','test');
+        
+      $.getJSON("./data/user.json",function(data){
+        user = data;
+      });
+      
+      
+      $(document).ready(function(){
+        alert("test");
+        $('#btn').click(function(){
+          console.log("clicked");
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          //return false;
+        });
+        
+        
+        $("#btn_dice").click(function(){
+          var d = Math.floor( Math.random() * 12 ) + 1;
+          user.position += d;
+          if(user.position >= 40){
+            user.position -= 40;
+          }
+          $("#dice_result").html(d);
+          socket.emit("userPosition",user.position);
+          
+        });
+
+        socket.on("messageToMobile",function(name){
+          $("#position").html(name);
+        });
+        
+        
+        
+      });
+    </script>
+    
+    
+  </head>
+  <body>
+    <p>mobile page</p>
+    <p>session id : <%= sessid %></p>
+    
+    <ul id="messages"></ul>
+        <textarea id="m" autocomplete="off"></textarea><button id="btn">Send</button>
+    
+    <div id="dice">
+      <button id="btn_dice">サイコロを振る</button>
+      <p>サイコロの目：<span id="dice_result"></span></p>
+    </div>
+    
+    <div id="status">
+      <p>現在地：<span id="position"></span></p>
+      <p>所持金：<span id="money"></span></p>
+
+    </div>
+  </body>
+</html>
